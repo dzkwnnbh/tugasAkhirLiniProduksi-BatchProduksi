@@ -1,0 +1,172 @@
+{% extends 'baseBatchProduction.html' %}
+
+{% block main %}
+
+<div class="container rounded-bottom shadow-lg" style="min-height: 500px;background-color: #e8e8e8;">
+    <div class="row">
+        <div class="col align-self-end">
+            <a href="{% url 'mesinBatchProduction' %}" class="link-dark text-decoration-none h5" style="margin-left: 50px">Data Mesin</a>
+            <h1 class="ms-5">Detail Mesin {{id}}</h1>
+        </div>
+        {% load has_group %}
+        {% if request.user|has_group:"Mekanik" %}
+        <div class="col text-end me-5 mt-5 mb-3">
+            <div class="btn-group">
+                <button id="btnGroupDrop0" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i> Tambah
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li> <a class="dropdown-item" href="{% url 'tambah_mesinBatchProduction' %}">Stasiun Kerja & Mesin</a></li>
+                    <li> <a class="dropdown-item" href="{% url 'tambah_prosesBatchProduction' %}">Proses</a></li>
+                    <li> <a class="dropdown-item" href="{% url 'tambah_diesBatchProduction' %}">Dies</a></li>
+                    <li> <a class="dropdown-item" href="{% url 'tambah_operatorBatchProduction' %}">Operator</a></li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <hr style="height: 3px; background-color: black">
+    <div class="card mx-5 mb-5">
+         <div class="card-header pt-2" style="background-color:#c9c9c9;">
+            <ul class="nav nav-pills nav-fill mx-4" id="pills-tab" role="tablist">
+                <li class="nav-item rounded mx-3" role="presentation">
+                    <button class="nav-link active" id="pills-prodies-tab" data-bs-toggle="pill" data-bs-target="#pills-prodies" type="button" role="tab" aria-controls="pills-prodies" aria-selected="true">Data Proses & Dies</button>
+                </li>
+                <li class="nav-item rounded mx-3" role="presentation">
+                    <button class="nav-link" id="pills-operator-tab" data-bs-toggle="pill" data-bs-target="#pills-operator" type="button" role="tab" aria-controls="pills-operator" aria-selected="false">Operator</button>
+                </li>
+                <li class="nav-item rounded mx-3" role="presentation">
+                    <button class="nav-link" id="pills-rusak-tab" data-bs-toggle="pill" data-bs-target="#pills-rusak" type="button" role="tab" aria-controls="pills-rusak" aria-selected="false">Riwayat Perawatan</button>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body tab-content" id="pills-tabContent">
+            <div class="tab-content">
+                <div class="tab-pane fade show active mx-5" id="pills-prodies" role="tabpanel" aria-labelledby="pills-prodies-tab">
+                    <table class="table text-center table-hover">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Proses</th>
+                            <th>Dies // Durasi Setup // Berat</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in dataproses %}
+                        <tr>
+                            <td>{{ item.id_proses }}</td>
+                            <td>{{ item.nama_proses }}</td>
+                            <td>
+                                {% for die in item.dies_set.all %}
+                                {% load has_group %}
+                                {% if request.user|has_group:"Mekanik" %}
+                                <div class="mb-1">
+                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ die.id_dies }} // {{die.durasi_setup}} menit // {{die.berat_dies}} kg <i class="bi bi-caret-down-fill"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li> <a class="dropdown-item" href="{% url 'edit_diesBatchProduction' die.id_dies %}">Edit</a></li>
+                                    <li> <a class="dropdown-item" href="{% url 'hapus_diesBatchProduction' die.id_dies %}">Hapus</a></li>
+                                </ul>
+                                </div>
+<!--                                <table class="table table-hover">-->
+<!--                                    <tr>-->
+<!--                                        <td>ID</td>-->
+<!--                                        <td>Durasi Setup</td>-->
+<!--                                        <td>Berat</td>-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td>{{die.id_dies}}</td>-->
+<!--                                        <td>{{die.durasi_setup}} menit</td>-->
+<!--                                        <td>{{die.berat_dies}} kg</td>-->
+<!--                                    </tr>-->
+<!--                                </table>-->
+                                {% else %}
+                                <div class="mb-1">
+                                    <button type="button" class="btn btn-success btn-sm disabled" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {{ die.id_dies }} ({{die.durasi_setup}} menit)
+                                    </button>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                            {% load has_group %}
+                            {% if request.user|has_group:"Mekanik" %}
+                            <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-dark btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-caret-down-fill"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li> <a class="dropdown-item" href="{% url 'edit_prosesBatchProduction' item.id_proses %}">Edit Proses</a></li>
+                                    <li> <a class="dropdown-item" href="{% url 'hapus_prosesBatchProduction' item.id_proses %}">Hapus Proses</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                            {% endif %}
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center"><i>Tidak ada data</i></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade mx-5" id="pills-operator" role="tabpanel" aria-labelledby="pills-operator-tab">
+                    <table class="table text-center table-hover">
+                        <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Nama</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in dataoperator %}
+                        <tr>
+                            <td>{{ item.username }}</td>
+                            <td>{{ item.nama }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center"><i>Tidak ada data</i></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade mx-5" id="pills-rusak" role="tabpanel" aria-labelledby="pills-rusak-tab">
+                    <table class="table text-center table-hover">
+                        <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Jam</th>
+                            <th>Keterangan Perawatan</th>
+<!--                            <th>Tanggal Perbaikan</th>-->
+<!--                            <th>Keterangan Perbaikan</th>-->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in datarusak %}
+                        <tr>
+                            <td>{{ item.tanggal_perawatan|date:'d-m-Y' }}</td>
+                            <td>{{ item.waktu_awal|date:'H:i' }} - {{item.waktu_akhir|date:'H:i'}}</td>
+                            <td>{{ item.keterangan_perawatan }}</td>
+<!--                            <td>{{ item.tanggal_diperbaiki|date:'d-m-Y (H:i)' }}</td>-->
+<!--                            <td>{{ item.keterangan_perbaikan }}</td>-->
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center"><i>Tidak ada data</i></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock main %}

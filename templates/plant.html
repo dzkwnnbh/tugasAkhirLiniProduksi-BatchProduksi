@@ -1,0 +1,23 @@
+{% extends "baseBatchProduction.html" %}
+
+{% block main %}
+
+<div class="container p-5 text-white text-center"
+     style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);border-radius: 25px; background-color: rgba(0, 0, 0, 0.8);">    <div class="row p-5">
+        <div class="col my-auto">
+            <div class="display-6 text-center">Production Type:</div>
+        </div>
+        <div class="col btn-group-vertical px-5">
+            <a class="btn btn-outline-light btn-lg" href="/batch" role="button">Batch Production</a>
+            <a class="btn btn-outline-light btn-lg" href="#" role="button">Line Production</a>
+            <a class="btn btn-outline-light btn-lg" href="#" role="button">Takt System</a>
+            <a class="btn btn-outline-light btn-lg" href="#" role="button">Warehouse Management</a>
+            <a class="btn btn-outline-light btn-lg" href="#" role="button">Project Management</a>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock main %}

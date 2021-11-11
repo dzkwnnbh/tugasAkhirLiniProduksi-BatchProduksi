@@ -1,0 +1,119 @@
+{% extends 'baseBatchProduction.html' %}
+
+{% block main %}
+
+<div class="container rounded-bottom shadow-lg" style="min-height: 500px;background-color: #e8e8e8;">
+    <div class="row">
+        <div class="col align-self-end">
+            <a href="{% url 'produksiBatchProduction' %}" class="link-dark text-decoration-none h5" style="margin-left: 50px">Data Produksi</a>
+            <h1 class="ms-5">Detail Produksi {{idvar|date:"d/m/Y"}}</h1>
+        </div>
+        <div class="col">
+            {% load has_group %}
+            {% if request.user|has_group:"Staf produksi" %}
+            <p class="text-end pe-5 pt-5">
+                <a href="{% url 'tambah_istirahatBatchProduction' idvar %}" role="button" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i>
+                    Tambah Istirahat
+                </a>
+            </p>
+            {% endif %}
+        </div>
+    </div>
+    <hr style="height: 3px; background-color: black">
+    <div class="row">
+<!--        <div class="col">-->
+<!--            <div class="card ms-5 mb-5">-->
+<!--                <div class="card-body">-->
+<!--                    <h3 class="text-center">Data Libur</h3>-->
+<!--                    <div class="col px-1">-->
+<!--                        <table class="table text-center table-hover">-->
+<!--                            <thead>-->
+<!--                            <tr>-->
+<!--                                <th></th>-->
+<!--                                <th></th>-->
+<!--                            </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                            {% for item in data_libur %}-->
+<!--                            <tr>-->
+<!--                                <td>{{ item.tanggal|date:"d/m/Y"}}</td>-->
+<!--                                <td>-->
+<!--                                    {% if request.user|has_group:"Staf produksi" %}-->
+<!--                                    <div class="dropdown">-->
+<!--                                        <button id="btnGroupDrop1" type="button" class="btn btn-dark btn-sm" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                                            <i class="bi bi-caret-down-fill"></i>-->
+<!--                                        </button>-->
+<!--                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">-->
+<!--                                            <li><a class="dropdown-item" href="{% url 'hapus_breakBatchProduction' item.pk %}">Hapus</a></li>-->
+<!--                                        </ul>-->
+<!--                                    </div>-->
+<!--                                    {% endif %}-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            {% empty %}-->
+<!--                            <td colspan="2"><i>Tidak Ada Data</i></td>-->
+<!--                            {% endfor %}-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="col">
+            <div class="card me-5 mb-5">
+                <div class="card-body">
+                    <h3 class="text-center">Data Istirahat</h3>
+                    <div class="col px-1">
+                        <table class="table text-center table-hover">
+                            <thead>
+                            <tr>
+<!--                                <th>Mesin</th>-->
+                                <th>Istirahat</th>
+                                <th>Opsi</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in data_istirahat %}
+                            <tr>
+<!--                                <td>{{ item.id_mesin }}</td>-->
+                                <td>{{item.waktu_awal|date:'H:i'}} - {{item.waktu_akhir|date:'H:i'}}</td>
+<!--                                <td>-->
+<!--                                    <table class="table text-center table-hover">-->
+<!--                                        {% for is in data_istirahat %}-->
+<!--                                        {% if is.mesin == item %}-->
+<!--                                        <tr>-->
+<!--                                            <td>-->
+<!--                                                {{is.waktu_awal|date:'H:i'}} - {{is.waktu_akhir|date:'H:i'}}-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+<!--                                        {% endif %}-->
+<!--                                        {% endfor %}-->
+<!--                                    </table>-->
+<!--                                </td>-->
+                                <td>
+                                    {% if request.user|has_group:"Staf produksi" %}
+                                    <div class="dropdown">
+                                        <button id="btnGroupDrop2" type="button" class="btn btn-dark btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-caret-down-fill"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li><a class="dropdown-item" href="{% url 'hapus_istirahatBatchProduction' item.pk %}">Hapus</a></li>
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <td colspan="2"><i>Tidak ada Data</i></td>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock main %}

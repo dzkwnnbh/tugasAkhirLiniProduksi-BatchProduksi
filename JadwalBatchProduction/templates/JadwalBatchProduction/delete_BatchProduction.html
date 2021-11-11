@@ -1,0 +1,28 @@
+{% extends "baseBatchProduction.html" %}
+{% block main %}
+
+<div class="container rounded-bottom shadow-lg" style="min-height: 500px;background-color: #e8e8e8;">
+    <div class="row">
+        <div class="col">
+            <h1 class="ps-5 pt-5">{{header}} {{id}}?</h1>
+        </div>
+        <div class="col">
+            <p class="text-end pe-5 pt-5">
+                <button onclick="goBack()" role="button" class="btn btn-dark m-1">
+                    <i class="bi bi-arrow-left"></i>
+                    Kembali
+                </button>
+            </p>
+        </div>
+    </div>
+    <hr style="height: 3px; background-color: black">
+    <div class="text-center">
+        <h3>Anda yakin ingin untuk {{header}} {{id}}?</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary btn-block m-3">Hapus</button>
+        </form>
+    </div>
+</div>
+
+{% endblock main %}

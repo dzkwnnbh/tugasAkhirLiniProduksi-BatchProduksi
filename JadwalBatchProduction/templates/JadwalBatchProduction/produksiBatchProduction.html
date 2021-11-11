@@ -1,0 +1,384 @@
+{% extends 'baseBatchProduction.html' %}
+
+{% block main %}
+
+<div class="container rounded-bottom shadow-lg" style="min-height: 500px;background-color: #e8e8e8;">
+    <div class="row">
+        <div class="col">
+            <h1 class="ps-5 pt-5">Target Produksi</h1>
+        </div>
+        {% load has_group %}
+        {% if request.user|has_group:"Staf produksi" %}
+        <div class="col text-end mt-5 me-5">
+            <a href="{% url 'penggunaan_diesBatchProduction' %}" role="button" class="btn btn-warning">
+                Data Penggunaan Dies
+            </a>
+            <div class="btn-group">
+                <button id="btnGroupDrop0" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i> Tambah
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li> <a class="dropdown-item" href="{% url 'tambah_targetharianBatchProduction' %}">Target Harian</a></li>
+                    <li> <a class="dropdown-item" href="{% url 'tambah_targetmingguanBatchProduction' %}">Target Mingguan</a></li>
+                    <li> <a class="dropdown-item" href="{% url 'tambah_targetbulananBatchProduction' %}">Target Bulanan</a></li>
+                    <li> <a class="dropdown-item" href="{% url 'tambah_targettahunanBatchProduction' %}">Target Tahunan</a></li>
+                    <li><hr class="dropdown-divisor"></li>
+                    <li> <a class="dropdown-item" href="{% url 'tambah_liburBatchProduction' %}">Hari Libur</a></li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <div class="card mx-5 mb-5">
+        <div class="card-header pt-2" style="background-color:#c9c9c9;">
+            <ul class="nav nav-pills nav-fill mx-4" id="pills-tab" role="tablist">
+                <li class="nav-item rounded mx-3" role="presentation">
+                    <button class="nav-link active" id="pills-hariini-tab" data-bs-toggle="pill" data-bs-target="#pills-hariini" type="button" role="tab" aria-controls="pills-mingguan" aria-selected="true">Produksi Hari Ini</button>
+                </li>
+                <li class="nav-item rounded mx-3" role="presentation">
+                    <button class="nav-link" id="pills-harian-tab" data-bs-toggle="pill" data-bs-target="#pills-harian" type="button" role="tab" aria-controls="pills-harian" aria-selected="true">Target Harian</button>
+                </li>
+                <li class="nav-item rounded mx-3" role="presentation">
+                    <button class="nav-link" id="pills-mingguan-tab" data-bs-toggle="pill" data-bs-target="#pills-mingguan" type="button" role="tab" aria-controls="pills-mingguan" aria-selected="true">Target Mingguan</button>
+                </li>
+                <li class="nav-item rounded mx-3" role="presentation">
+                    <button class="nav-link" id="pills-bulanan-tab" data-bs-toggle="pill" data-bs-target="#pills-bulanan" type="button" role="tab" aria-controls="pills-bulanan" aria-selected="false">Target Bulanan</button>
+                </li>
+                <li class="nav-item rounded mx-3" role="presentation">
+                    <button class="nav-link" id="pills-tahunan-tab" data-bs-toggle="pill" data-bs-target="#pills-tahunan" type="button" role="tab" aria-controls="pills-tahunan" aria-selected="false">Target Tahunan</button>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body tab-content" id="pills-tabContent">
+            <div class="tab-content">
+                <div class="tab-pane fade show active mx-5" id="pills-hariini" role="tabpanel" aria-labelledby="pills-hariini-tab">
+                    <!--                    <h3 class="text-center">Minggu ke-{{ hariini.0.minggu }}</h3>-->
+                    {% if hariini.0.is_libur == 1 %}
+                    <div class="card mb-5 ">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col border-end border-dark text-center">
+                                    {% load i18n %}
+                                    {% language 'id' %}
+                                    <h2 class="text-center mt-2">
+                                        {% now "l" %}
+                                    </h2>
+                                    <h2 class="text-center">
+                                        {% now "d/m/Y" %}
+                                    </h2>
+                                    {% endlanguage %}
+                                </div>
+                                <div class="col text-center mt-4">
+                                    <h2>LIBUR</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% elif hariini.0.is_libur == 0 %}
+                    <div class="card mb-5 ">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col border-end border-dark text-center">
+                                    {% load i18n %}
+                                    {% language 'id' %}
+                                    <h2 class="text-center mt-2">
+                                        {% now "l" %}
+                                    </h2>
+                                    <h2 class="text-center">
+                                        {% now "d/m/Y" %}
+                                    </h2>
+                                    {% endlanguage %}
+                                </div>
+                                <div class="col border-dark text-center">
+                                    <h5><b>PRODUKSI</b></h5>
+                                    <table class="table">
+                                        <tr>
+                                            <th>Material</th>
+                                            <th>Target</th>
+                                            <th>Capaian</th>
+                                            <th></th>
+                                        </tr>
+                                        {% for item in produksisekarang %}
+                                        <tr>
+                                            <td>{{item.material}}</td>
+                                            <td>{{item.target}}</td>
+                                            <td>{{ item.selesai }}/{{ item.target }}</td>
+                                            <td>
+                                                {% if request.user|has_group:"Staf produksi" %}
+                                                <div class="dropdown">
+                                                    <button id="btnGroupDrop{{item.id}}" type="button" class="btn btn-primary btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-caret-down-fill"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <li><a class="dropdown-item" href="{% url 'edit_produksiharianBatchProduction' item.id %}">Edit</a></li>
+                                                        <li><a class="dropdown-item" href="{% url 'hapus_produksiharianBatchProduction' item.id %}">Hapus</a></li>
+                                                    </ul>
+                                                </div>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                                <!--                                <div class="col text-center">-->
+                                <!--                                    <h5><b>TANGGAL</b></h5>-->
+                                <!--                                    <table class="table">-->
+                                <!--                                        <tr>-->
+                                <!--                                            <th></th>-->
+                                <!--                                            <th>Mulai</th>-->
+                                <!--                                            <th>Selesai</th>-->
+                                <!--                                        </tr>-->
+                                <!--                                        <tr>-->
+                                <!--                                            <th>Rencana</th>-->
+                                <!--                                            <td>{{awal|date:"d-m-Y"}}</td>-->
+                                <!--                                            <td>{{akhir|date:"d-m-Y"}}</td>-->
+                                <!--                                        </tr>-->
+                                <!--                                        <tr>-->
+                                <!--                                            <th>Realisasi</th>-->
+                                <!--                                            <td>{{item.minggu|date:"d-m-Y"}}</td>-->
+                                <!--                                            <td></td>-->
+                                <!--                                        </tr>-->
+                                <!--                                    </table>-->
+                                <!--                                </div>-->
+                            </div>
+                            <div class="row pt-2 border-top border-dark justify-content-center">
+                                <div class="btn-group">
+                                    {% if hariini.0.is_dijadwal == False and request.user|has_group:"Staf produksi" %}
+                                    <a class="btn btn-lg btn-primary" href="{% url 'mulai_produksiBatchProduction' hariini.0.tanggal %}">Mulai Produksi</a>
+                                    <a class="btn btn-lg btn-success ps-2 pe-2 disabled" href="{% url 'listjadwal_produksiBatchProduction' hariini.0.id %}">Jadwal Belum Tersedia</a>
+                                    {% else %}
+                                    <a class="btn btn-lg btn-primary ps-2 pe-2 disabled" href="{% url 'jadwal_produksiBatchProduction' %}">Produksi Dimulai</a>
+                                    <a class="btn btn-lg btn-success" href="{% url 'listjadwal_produksiBatchProduction' hariini.0.id %}">Lihat Jadwal</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-center"><i>Tidak ada produksi hari ini.</i></p>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade mx-5" id="pills-harian" role="tabpanel" aria-labelledby="pills-harian-tab">
+                    <table class="table text-center table-hover">
+                        <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Tahun</th>
+                            <th>Material</th>
+                            <th>Jumlah</th>
+                            <th>Opsi</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in targetharian %}
+                        {% if item.is_libur %}
+                        <tr>
+                            <td>
+                                {% language 'id' %}{{ item.tanggal|date:"l, d F" }}{% endlanguage %}
+                            </td>
+                            <td colspan="4" class="table-warning"><h4>LIBUR</h4></td>
+                            <td>
+                                {% if request.user|has_group:"Staf produksi" %}
+                                <div class="dropdown">
+                                    <button id="btnGroupDropHariLibur" type="button" class="btn btn-dark btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <!--                                        <li><a class="dropdown-item" href="url 'edit_targetharianBatchProduction' target.id %}">Edit</a></li>-->
+                                        <li><a class="dropdown-item" href="{% url 'hapus_targetharianBatchProduction' item.id %}">Hapus</a></li>
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td>
+                                {% language 'id' %}{{ item.tanggal|date:"l, d F" }}{% endlanguage %}
+                            </td>
+                            <td>{{ item.tanggal|date:"Y" }}</td>
+                            <td colspan="2">
+                                <table class="table text-center table-hover">
+                                    {% for target in produksiharian %}
+                                    {% if target.tanggal == item.tanggal %}
+                                    <tr>
+                                        <td>{{ target.material }}</td>
+                                        <td>
+                                            {{target.selesai}}/{{target.target}}
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: {% widthratio target.selesai target.target 100 %}%;" aria-valuenow="{% widthratio target.selesai target.target 100 %}" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </table>
+                            </td>
+                            <td>
+                                {% if item.tanggal|date:"Y-m-d" <= sekarang|date:"Y-m-d" and item.is_dijadwal == False %}
+                                {% if request.user|has_group:"Staf produksi" %}
+                                <a class="btn btn-primary btn-sm" href="{% url 'tambah_produksiharianBatchProduction' item.tanggal %}">
+                                    <i class="bi bi-plus-lg"></i> Tambah Produksi
+                                </a></p>
+                                {% endif %}
+                                <p><a class="btn btn-success btn-sm" href="{% url 'istirahat_BatchProduction' item.tanggal %}">
+                                    <i class="bi bi-plus-lg"></i> Data Istirahat
+                                </a></p>
+                                {% else %}
+                                <a class="btn btn-danger btn-sm" href="#" title="Produksi lewat hari atau sudah dimulai">
+                                    <i class="bi bi-x-lg"></i>
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if request.user|has_group:"Staf produksi" %}
+                                <div class="dropdown">
+                                    <button id="btnGroupDropHari" type="button" class="btn btn-dark btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <!--                                        <li><a class="dropdown-item" href="url 'edit_targetharianBatchProduction' target.id %}">Edit</a></li>-->
+                                        <li><a class="dropdown-item" href="{% url 'hapus_targetharianBatchProduction' item.id %}">Hapus</a></li>
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade mx-5" id="pills-mingguan" role="tabpanel" aria-labelledby="pills-mingguan-tab">
+                    <table class="table text-center table-hover">
+                        <thead>
+                        <tr>
+                            <th>Minggu ke-</th>
+                            <th>Tahun</th>
+                            <th>Material</th>
+                            <th>Jumlah</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in targetmingguan %}
+                        <tr>
+                            <td>{{ item.minggu }}</td>
+                            <td>{{ item.tahun }}</td>
+                            <td>{{ item.material }}</td>
+                            <td>
+                                {{item.selesai}}/{{item.target}}
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: {% widthratio item.selesai item.target 100 %}%;" aria-valuenow="{% widthratio item.selesai item.target 100 %}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if request.user|has_group:"Staf produksi" %}
+                                <div class="dropdown">
+                                    <button id="btnGroupDropMinggu" type="button" class="btn btn-dark btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li><a class="dropdown-item" href="{% url 'edit_targetmingguanBatchProduction' item.id %}">Edit</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'hapus_targetmingguanBatchProduction' item.id %}">Hapus</a></li>
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <td colspan="5"><i>Tidak ada data</i></td>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade mx-5" id="pills-bulanan" role="tabpanel" aria-labelledby="pills-bulanan-tab">
+                    <table class="table text-center table-hover">
+                        <thead>
+                        <tr>
+                            <th>Bulan Ke-</th>
+                            <th>Tahun</th>
+                            <th>Material</th>
+                            <th>Jumlah</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in targetbulanan %}
+                        <tr>
+                            <td>{{ item.bulan }}</td>
+                            <td>{{ item.tahun }}</td>
+                            <td>{{ item.material }}</td>
+                            <td>
+                                {{item.selesai}}/{{item.target}}
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: {% widthratio item.selesai item.target 100 %}%;" aria-valuenow="{% widthratio item.selesai item.target 100 %}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if request.user|has_group:"Staf produksi" %}
+                                <div class="dropdown">
+                                    <button id="btnGroupDropBulan" type="button" class="btn btn-dark btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li><a class="dropdown-item" href="{% url 'edit_targetbulananBatchProduction' item.id %}">Edit</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'hapus_targetbulananBatchProduction' item.id %}">Hapus</a></li>
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <td colspan="5"><i>Tidak ada data</i></td>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade mx-5" id="pills-tahunan" role="tabpanel" aria-labelledby="pills-tahunan-tab">
+                    <table class="table text-center table-hover">
+                        <thead>
+                        <tr>
+                            <th>Tahun</th>
+                            <th>Material</th>
+                            <th>Jumlah</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in targettahunan %}
+                        <tr>
+                            <td>{{ item.tahun }}</td>
+                            <td>{{ item.material }}</td>
+                            <td>
+                                {{item.selesai}}/{{item.target}}
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: {% widthratio item.selesai item.target 100 %}%;" aria-valuenow="{% widthratio item.selesai item.target 100 %}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if request.user|has_group:"Staf produksi" %}
+                                <div class="dropdown">
+                                    <button id="btnGroupDropTahun" type="button" class="btn btn-dark btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li><a class="dropdown-item" href="{% url 'edit_targettahunanBatchProduction' item.id %}">Edit</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'hapus_targettahunanBatchProduction' item.id %}">Hapus</a></li>
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <td colspan="6"><i>Tidak ada data</i></td>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

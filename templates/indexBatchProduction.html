@@ -1,0 +1,12 @@
+{% extends "baseBatchProduction.html" %}
+
+{% block main %}
+
+<div class="container p-5 text-white text-center"
+     style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);border-radius: 25px; background-color: rgba(0, 0, 0, 0.8);">
+    <h1 class="display-2 my-3">ADiMS</h1>
+    <p class="blockquote">Automated Distribution Management System</p>
+    <p class="lead">Please <a href="{% url 'login' %}" class="link-light">log in</a> to continue</p>
+</div>
+
+{% endblock main %}

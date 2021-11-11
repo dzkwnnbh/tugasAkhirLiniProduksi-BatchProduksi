@@ -1,0 +1,185 @@
+{% extends 'baseBatchProduction.html' %}
+
+{% block main %}
+
+<div class="container rounded-bottom shadow-lg" style="min-height: 500px;background-color: #e8e8e8;">
+    <div class="row pt-3">
+        <div class="col align-self-end">
+            <a href="{% url 'produksiBatchProduction' %}" class="link-dark text-decoration-none h5" style="margin-left: 50px">Data Produksi</a>
+            <h1 class="ms-5">Data Penggunaan Dies</h1>
+        </div>
+    </div>
+        {% load has_group %}
+        {% load i18n %}
+    <div class="card mx-5 mb-5">
+        <div class="card-header pt-2" style="background-color:#c9c9c9;">
+            <ul class="nav nav-pills nav-fill mx-4" id="pills-tab" role="tablist">
+                <li class="nav-item rounded mx-3" role="presentation">
+                    <button class="nav-link active" id="pills-harian-tab" data-bs-toggle="pill" data-bs-target="#pills-harian" type="button" role="tab" aria-controls="pills-harian" aria-selected="true">Harian</button>
+                </li>
+                <li class="nav-item rounded mx-3" role="presentation">
+                    <button class="nav-link" id="pills-mingguan-tab" data-bs-toggle="pill" data-bs-target="#pills-mingguan" type="button" role="tab" aria-controls="pills-mingguan" aria-selected="true">Mingguan</button>
+                </li>
+                <li class="nav-item rounded mx-3" role="presentation">
+                    <button class="nav-link" id="pills-bulanan-tab" data-bs-toggle="pill" data-bs-target="#pills-bulanan" type="button" role="tab" aria-controls="pills-bulanan" aria-selected="false">Bulanan</button>
+                </li>
+                <li class="nav-item rounded mx-3" role="presentation">
+                    <button class="nav-link" id="pills-tahunan-tab" data-bs-toggle="pill" data-bs-target="#pills-tahunan" type="button" role="tab" aria-controls="pills-tahunan" aria-selected="false">Tahunan</button>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body tab-content" id="pills-tabContent">
+            <div class="tab-content">
+                <div class="tab-pane fade show active mx-5" id="pills-harian" role="tabpanel" aria-labelledby="pills-harian-tab">
+                    <table class="table text-center table-hover">
+                        <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Dies</th>
+                            <th>Penggunaan</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in harian %}
+                        <tr>
+                            <td>
+                                {{ item.tanggal|date:"d-m-Y" }}
+                            </td>
+                            <td>
+                                {% for die in datadies %}
+                                {% if die.id_tp == item.tanggal|date:"Y-m-d"|slugify %}
+                                <p>{% ifchanged %}{{ die.dies }}{% endifchanged %}</p>
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for die in datadies %}
+                                {% if die.id_tp == item.tanggal|date:"Y-m-d"|slugify %}
+                                <p>{% ifchanged %}{{ die.dies|countdies:die.id_tp }}{% endifchanged %}</p>
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade mx-5" id="pills-mingguan" role="tabpanel" aria-labelledby="pills-mingguan-tab">
+                    <table class="table text-center table-hover">
+                        <thead>
+                        <tr>
+                            <th>Minggu ke-/Tahun</th>
+                            <th>Dies</th>
+                            <th>Penggunaan</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in mingguan %}
+                        {% ifchanged %}
+                        <tr>
+                            <td>
+                                {{ item.minggu }}/{{item.tahun}}
+                            </td>
+                            <td>
+                                {% for die in datadies %}
+                                {% if die.id_tp|parse_iso|date:"W" == item.minggu|slugify %}
+                                <p>{% ifchanged %}{{ die.dies }}{% endifchanged %}</p>
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for die in datadies %}
+                                {% if die.id_tp|parse_iso|date:"W" == item.minggu|slugify %}
+                                {% with die.id_tp|parse_iso|date:"W" as mgg%}
+                                <p>{% ifchanged %}{{ die.dies|countdiesmgg:mgg }}{% endifchanged %}</p>
+                                {% endwith %}
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endifchanged %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade mx-5" id="pills-bulanan" role="tabpanel" aria-labelledby="pills-bulanan-tab">
+                    <table class="table text-center table-hover">
+                        <thead>
+                        <tr>
+                            <th>Bulan/Tahun</th>
+                            <th>Dies</th>
+                            <th>Penggunaan</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in bulanan %}
+                        {% ifchanged %}
+                        <tr>
+                            <td>
+                                {{ item.bulan }}/{{ item.tahun }}
+                            </td>
+                            <td>
+                                {% for die in datadies %}
+                                {% if die.id_tp|slice:"5:7" == item.bulan|slugify %}
+                                <p>{% ifchanged %}{{ die.dies }}{% endifchanged %}</p>
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for die in datadies %}
+                                {% if die.id_tp|slice:"5:7" == item.bulan|slugify %}
+                                {% with die.id_tp|slice:"5:7" as bln %}
+                                <p>{% ifchanged %}{{ die.dies|countdiesbln:bln }}{% endifchanged %}</p>
+                                {% endwith %}
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endifchanged %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade mx-5" id="pills-tahunan" role="tabpanel" aria-labelledby="pills-tahunan-tab">
+                    <table class="table text-center table-hover">
+                        <thead>
+                        <tr>
+                            <th>Tahun</th>
+                            <th>Dies</th>
+                            <th>Penggunaan</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in tahunan %}
+                        {% ifchanged %}
+                        <tr>
+                            <td>
+                                {{ item.tahun }}
+                            </td>
+                            <td>
+                                {% for die in datadies %}
+                                {% if die.id_tp|slice:":-6" == item.tahun|slugify %}
+                                <p>{% ifchanged %}{{ die.dies }}{% endifchanged %}</p>
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for die in datadies %}
+                                {% if die.id_tp|slice:":-6" == item.tahun|slugify %}
+                                {% with die.id_tp|slice:":-6" as thn %}
+                                <p>{% ifchanged %}{{ die.dies|countdiesthn:thn }}{% endifchanged %}</p>
+                                {% endwith %}
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endifchanged %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

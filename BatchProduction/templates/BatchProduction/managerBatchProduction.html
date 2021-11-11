@@ -1,0 +1,38 @@
+{% extends "baseBatchProduction.html" %}
+
+{% block main %}
+
+<div class="container py-4 px-0 text-white text-center"
+     style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);border-radius: 25px; background-color: rgba(0, 0, 0, 0.8);">
+    <div class="row">
+        <p class="display-6 text-decoration-none mb-3">Home</p>
+    </div>
+    <div class="col mx-auto">
+        <a href="{% url 'mesinBatchProduction' %}" style="width: 18rem; padding: 2rem 0" class="btn btn-lg btn-outline-light m-2">
+            <h4>Stasiun Kerja</h4>
+            <h4>& Mesin</h4>
+        </a>
+        <a href="{% url 'perawatanBatchProduction' %}" style="width: 18rem; padding: 2rem 0" class="btn btn-lg btn-outline-light m-2">
+            <h4>Perawatan</h4>
+            <h4>Mesin</h4>
+        </a>
+        <a href="{% url 'produk:index' %}" style="width: 18rem; padding: 2rem 0" class="btn btn-lg btn-outline-light m-2">
+            <h4>Produk</h4>
+            <h4>& BOM</h4>
+        </a>
+        <a href="{% url 'produksiBatchProduction' %}" style="width: 18rem; padding: 2rem 0" class="btn btn-lg btn-outline-light m-2">
+            <h4>Target</h4>
+            <h4>Produksi</h4>
+        </a>
+<!--        <a href="{roduk:engineering_order' %}" style="width: 18rem; padding: 2rem 0" class="btn btn-lg btn-outline-light m-2">-->
+<!--            <h4>Engineering</h4>-->
+<!--            <h4>Order</h4>-->
+<!--        </a>-->
+        <a href="{% url 'jadwal_produksiBatchProduction' %}" style="width: 18rem; padding: 2rem 0" class="btn btn-lg btn-outline-light m-2">
+            <h4>Jadwal</h4>
+            <h4>Operasi</h4>
+        </a>
+    </div>
+</div>
+
+{% endblock main %}

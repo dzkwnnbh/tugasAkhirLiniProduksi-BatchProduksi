@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{subjudul}} | {{ judul }}</title>
+    <link rel="icon" type="image/png" href="{% static 'img/itb.png' %}"/>
+    {% include "snippets/stylesBatchProduction.html" %}
+</head>
+<body style="background-image: url('/static/img/bg-img.jpg'); background-attachment: fixed">
+{% include "snippets/navbarBatchProduction.html" %}
+{% block main %}
+{% endblock main %}
+<div class="bg-dark text-light text-center" style="position: fixed; bottom: 0; width: 100%">
+    &#169; Institut Teknologi Bandung | Kontributor: <a href="{% url 'about' %}" class="text-light">Dzakwan Nabih (13117128)</a>
+</div>
+<div class="bg-dark text-center" style="position: fixed; bottom: 0; right: 0; width: 20px; font-size: 10px; color: red">
+    <a href="{% url 'dz' %}" class="text-secondary">Boo!</a>
+</div>
+{% include "snippets/scriptsBatchProduction.html" %}
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
+</body>
+</html>

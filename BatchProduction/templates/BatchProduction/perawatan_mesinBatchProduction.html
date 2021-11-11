@@ -1,0 +1,104 @@
+{% extends 'baseBatchProduction.html' %}
+
+{% block main %}
+
+<div class="container rounded-bottom shadow-lg" style="min-height: 500px;background-color: #e8e8e8;">
+    <div class="row">
+        <div class="col align-self-end">
+            <a href="{% url 'mesinBatchProduction' %}" class="link-dark text-decoration-none h5" style="margin-left: 50px">Data Mesin</a>
+            <h1 class="ms-5">Data Perawatan</h1>
+        </div>
+        {% load has_group %}
+        {% if request.user|has_group:"Mekanik" %}
+        <div class="col text-end me-5 mt-5 mb-3">
+            <a href="{% url 'tambah_perawatanBatchProduction' %}" role="button" class="btn btn-danger">
+                Jadwalkan Perawatan
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    <div class="card mx-5 mb-5">
+<!--        <div class="card-header pt-2" style="background-color:#c9c9c9;">-->
+<!--            <ul class="nav nav-pills nav-fill mx-4" id="pills-tab" role="tablist">-->
+<!--                <li class="nav-item rounded mx-3" role="presentation">-->
+<!--                    <button class="nav-link active" id="pills-belum-tab" data-bs-toggle="pill" data-bs-target="#pills-belum" type="button" role="tab" aria-controls="pills-belum" aria-selected="true">Belum Diperbaiki</button>-->
+<!--                </li>-->
+<!--                <li class="nav-item rounded mx-3" role="presentation">-->
+<!--                    <button class="nav-link" id="pills-sudah-tab" data-bs-toggle="pill" data-bs-target="#pills-sudah" type="button" role="tab" aria-controls="pills-sudah" aria-selected="false">Riwayat Perbaikan</button>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--        <div class="card-body tab-content" id="pills-tabContent">-->
+<!--            <div class="tab-content">-->
+<!--                <div class="tab-pane fade show active mx-5" id="pills-belum" role="tabpanel" aria-labelledby="pills-belum-tab">-->
+                    <table class="table text-center border-dark">
+                        <thead>
+                        <tr>
+                            <th>Mesin</th>
+                            <th>Tanggal</th>
+                            <th>Jam</th>
+<!--                            <th>Tanggal Gangguan</th>-->
+                            <th>Keterangan</th>
+<!--                            {% load has_group %}-->
+<!--                            {% if request.user|has_group:"Mekanik" %}-->
+<!--                            <th>Tindakan</th>-->
+<!--                            {% endif %}-->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in kerusakan %}
+                        <tr>
+                            <td>({{item.mesin.id_mesin}}) {{ item.mesin }}</td>
+                            <td>{{ item.tanggal_perawatan }}</td>
+                            <td>{{item.waktu_awal|date:'H:i'}} - {{item.waktu_akhir|date:'H:i'}}</td>
+                            <td>{{item.keterangan_perawatan}}</td>
+<!--                            <td>{{ item.tanggal_rusak|date:'d/m/y (H:i)' }} - {{ item.keterangan_kerusakan }}</td>-->
+<!--                            {% if request.user|has_group:"Mekanik" %}-->
+<!--                            <td>-->
+<!--                                <a class="btn btn-sm btn-success" href=" url 'perbaiki_kerusakanBatchProduction' item.id_kerusakan %}">-->
+<!--                                    Sudah diperbaiki-->
+<!--                                </a>-->
+<!--                            </td>-->
+<!--                            {% endif %}-->
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6"><i>Tidak ada data</i></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+<!--                <div class="tab-pane fade mx-5" id="pills-sudah" role="tabpanel" aria-labelledby="pills-sudah-tab">-->
+<!--                    <table class="table text-center border-dark">-->
+<!--                        <thead>-->
+<!--                        <tr>-->
+<!--                            <th>ID</th>-->
+<!--                            <th>Mesin</th>-->
+<!--                            <th>Pelapor</th>-->
+<!--&lt;!&ndash;                            <th>Tanggal Gangguan</th>&ndash;&gt;-->
+<!--                            <th>Keterangan Gangguan</th>-->
+<!--&lt;!&ndash;                            <th>Tanggal Diperbaiki</th>&ndash;&gt;-->
+<!--                            <th>Keterangan Perbaikan</th>-->
+<!--                        </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                        {% for item in diperbaiki %}-->
+<!--                        <tr>-->
+<!--                            <td>{{ item.id_kerusakan }}</td>-->
+<!--                            <td>{{ item.mesin_id }}</td>-->
+<!--                            <td>{{item.namaPengusul}} (Bid. {{item.departemenPengusul}})</td>-->
+<!--                            <td>{{ item.tanggal_rusak|date:'d/m/Y (H:i)' }} - {{ item.keterangan_kerusakan }}</td>-->
+<!--                            <td>{{ item.tanggal_diperbaiki|date:'d/m/Y (H:i)' }} - {{ item.keterangan_perbaikan }}</td>-->
+<!--                        </tr>-->
+<!--                        {% empty %}-->
+<!--                        <td colspan="7"><i>Tidak ada data</i></td>-->
+<!--                        {% endfor %}-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+</div>
+{% endblock main %}

@@ -1,0 +1,87 @@
+{% extends 'baseBatchProduction.html' %}
+
+{% block main %}
+
+<div class="container rounded-bottom shadow-lg" style="min-height: 500px;background-color: #e8e8e8;">
+    <div class="row">
+        <div class="col">
+            <h1 class="ps-5 pt-5">Data Mesin</h1>
+        </div>
+        <div class="col text-end mt-5 me-5">
+            <a href="{% url 'perawatanBatchProduction' %}" role="button" class="btn btn-warning">
+                Data Perawatan
+            </a>
+            {% load has_group %}
+            {% if request.user|has_group:"Mekanik" %}
+            <div class="btn-group">
+                <button id="btnGroupDrop0" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i> Tambah
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li> <a class="dropdown-item" href="{% url 'tambah_mesinBatchProduction' %}">Stasiun Kerja & Mesin</a></li>
+                    <li> <a class="dropdown-item" href="{% url 'tambah_prosesBatchProduction' %}">Proses</a></li>
+                    <li> <a class="dropdown-item" href="{% url 'tambah_diesBatchProduction' %}">Dies</a></li>
+                    <li> <a class="dropdown-item" href="{% url 'tambah_operatorBatchProduction' %}">Operator</a></li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <hr style="height: 3px; background-color: black">
+    <div class="card mx-5 mb-5">
+        <div class="card-body">
+            <div class="col px-1">
+                <table class="table text-center table-hover">
+                    <thead>
+                    <tr>
+                        <th>Mesin</th>
+                        <th>Stasiun Kerja</th>
+                        <th>Jam Kerja</th>
+<!--                        <th>Status</th>-->
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in datamesin %}
+                    <tr>
+                        <td>({{ item.id_mesin}}) {{ item.nama_mesin }}</td>
+                        <td>{{ item.id_stasiun_kerja }}</td>
+                        <td>{{ item.mulai_kerja|date:"H:i" }} - {{ item.selesai_kerja|date:"H:i" }}</td>
+<!--                        {% if 1 == 1 %}-->
+<!--                        <td>-->
+<!--                            <a class="btn btn-success disabled">-->
+<!--                                Available-->
+<!--                            </a>-->
+<!--                        </td>-->
+<!--                        {% else %}-->
+<!--                        <td>-->
+<!--                            <a class="btn btn-danger disabled">-->
+<!--                                Unavailable-->
+<!--                            </a>-->
+<!--                        </td>-->
+<!--                        {% endif %}-->
+                        <td>
+                            <div class="dropdown">
+                                <button id="btnGroupDrop1" type="button" class="btn btn-dark btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-caret-down-fill"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    {% if request.user|has_group:"Mekanik" %}
+                                    <li><a class="dropdown-item" href="{% url 'edit_mesinBatchProduction' item.id_mesin %}">Edit</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'hapus_mesinBatchProduction' item.id_mesin %}">Hapus</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    {% endif %}
+                                    <li><a class="dropdown-item" href="{% url 'detail_mesinBatchProduction' item.id_mesin %}">Detail Mesin</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock main %}

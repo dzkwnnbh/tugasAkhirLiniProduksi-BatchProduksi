@@ -1,0 +1,13 @@
+{% extends "baseBatchProduction.html" %}
+
+{% block main %}
+
+<div class="container p-5 text-white text-center"
+     style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);border-radius: 25px; background-color: rgba(0, 0, 0, 0.8);">
+    <h1 class="pb-5 display-6">Do you want to logout?</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="submit" name="logout" value="Logout" class="btn btn-outline-light btn-lg">
+    </form>
+</div>
+{% endblock main %}
